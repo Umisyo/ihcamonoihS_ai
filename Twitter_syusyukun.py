@@ -2,6 +2,9 @@ from config import AK, ASK, AT, ATS
 import time
 import pandas as pd
 import tweepy
+import markovify
+import numpy as np
+from natto import MeCab
 
 auth = tweepy.OAuthHandler(AK, ASK)
 auth.set_access_token(AT, ATS)
@@ -9,21 +12,42 @@ api = tweepy.API(auth ,wait_on_rate_limit = True)
 
 tweet_data = []
 
-def main():
-    while True:
-        count = 0
+class Twitter_syusyukun:
+    def syusyu(self, auth):
+        self.count = 0
 
         for tweet in tweepy.Cursor(api.user_timeline,screen_name = '@ihcamonoihS',exclude_replies = True).items():
-            tweet_data.append([tweet.id,tweet.created_at,tweet.text.replace('\n',''),tweet.favorite_count,tweet.retweet_count])
-            df = pd.DataFrame(tweet_data)
-            print(df)
-            count += 1
+            tweet_data.append([tweet.text.replace('\n','')])
+            self.df = pd.DataFrame(tweet_data, index=None, columns=None, dtype=None, copy=False)
+            #print(self.df)
+            self.count += 1
 
-            if count == 100:
+            if self.count == 101:
                 break
-        
-        df.to_csv('\\Users\\user\\awesome\\my_ai\\tweets.csv', mode='a', header='false')
-        time.sleep(3600)
 
-if __name__ == "__main__":
-    main()
+class mecab_owakatikun(Twitter_syusyukun, MeCab):
+    def owakatikun(self):
+        self.nm = MeCab('-Owakati')
+        self.result = ''
+        self.syusyu(auth)
+        self.tweet_ls = self.nm.parse(str(self.df.values))
+        i = len(self.tweet_ls)
+        for h in range (i):
+                if '@' in str(self.tweet_ls[h]):
+                    h += 1
+                elif '時報' in str(self.tweet_ls[h]):
+                    h += 1
+                elif 'RT' in str(self.tweet_ls[h]):
+                    h += 1
+                else:
+                    self.result += self.tweet_ls[h]
+                    h += 1
+        with open('/mnt/c/users/user/awesome/my_ai/tweets.txt', 'a') as f:
+            f.write(self.result)
+            f.close       
+        print(self.result)
+
+mok = mecab_owakatikun()
+while True:
+    mok.owakatikun()
+    time.sleep(3600)
