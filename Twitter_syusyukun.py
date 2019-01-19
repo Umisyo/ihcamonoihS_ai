@@ -21,7 +21,7 @@ class Twitter_syusyukun:
             #print(self.df)
             self.count += 1
 
-            if self.count == 501:
+            if self.count == 1000:
                 break
 
 class mecab_owakatikun(Twitter_syusyukun, MeCab):
@@ -50,4 +50,4 @@ class mecab_owakatikun(Twitter_syusyukun, MeCab):
 mok = mecab_owakatikun()
 while True:
     mok.owakatikun()
-    time.sleep(3600)
+    time.sleep(18000*24)

@@ -1,13 +1,21 @@
+import tweepy
+from config import AK, ASK, AT, ATS
+import time
 import random
+
+auth = tweepy.OAuthHandler(AK, ASK)
+auth.set_access_token(AT, ATS)
+api = tweepy.API(auth ,wait_on_rate_limit = True)
+
 
 def main():
     with open('/mnt/c/users/user/awesome/my_ai/tweets.txt') as f:
         text = f.read()
 
-    dic = str.maketrans('',''," []'()｢｣「」?？！!@.…：:,1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ『』")
+    dic = str.maketrans('','',"_/\.%~^|= []'()｢｣「」?？！!@.…：:,1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ『』")
 
     wordlist = str(text.translate(dic))
-    
+
     # マルコフ連鎖用のテーブルを作成する
     markov = {}
     w1 = ''
@@ -29,13 +37,16 @@ def main():
     sentence = ""
     w1, w2 = random.choice(list(markov.keys()))
 
-    N = range(10, 100)
+    N = range(100)
     while count < random.choice(N):
         tmp = random.choice(markov[(w1, w2)])
         sentence += tmp
         w1, w2 = w2, tmp
         count += 1
-
+    
     print(sentence.strip())
-if __name__ == "__main__":
+        
+    api.update_status(sentence.strip())
+while True:
     main()
+    time.sleep(300)
