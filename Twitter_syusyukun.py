@@ -2,7 +2,6 @@ from config import AK, ASK, AT, ATS
 import time
 import pandas as pd
 import tweepy
-import markovify
 import numpy as np
 from natto import MeCab
 
@@ -22,7 +21,7 @@ class Twitter_syusyukun:
             #print(self.df)
             self.count += 1
 
-            if self.count == 101:
+            if self.count == 501:
                 break
 
 class mecab_owakatikun(Twitter_syusyukun, MeCab):
@@ -33,19 +32,20 @@ class mecab_owakatikun(Twitter_syusyukun, MeCab):
         self.tweet_ls = self.nm.parse(str(self.df.values))
         i = len(self.tweet_ls)
         for h in range (i):
-                if '@' in str(self.tweet_ls[h]):
-                    h += 1
-                elif '時報' in str(self.tweet_ls[h]):
-                    h += 1
-                elif 'RT' in str(self.tweet_ls[h]):
-                    h += 1
-                else:
-                    self.result += self.tweet_ls[h]
-                    h += 1
+            if '@' in str(self.tweet_ls[h]):
+                h += 1
+            elif '時報' in str(self.tweet_ls[h]):
+                h += 1
+            elif 'RT' in str(self.tweet_ls[h]):
+                h += 1
+            else:
+                self.result += self.tweet_ls[h]
+                h += 1
+        self.write_txt = ''.join(self.result)
         with open('/mnt/c/users/user/awesome/my_ai/tweets.txt', 'a') as f:
-            f.write(self.result)
+            f.write(str(self.write_txt) + '\n')
             f.close       
-        print(self.result)
+        print(self.write_txt)
 
 mok = mecab_owakatikun()
 while True:

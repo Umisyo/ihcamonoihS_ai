@@ -1,0 +1,41 @@
+import random
+
+def main():
+    with open('/mnt/c/users/user/awesome/my_ai/tweets.txt') as f:
+        text = f.read()
+
+    dic = str.maketrans('',''," []'()｢｣「」?？！!@.…：:,1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ『』")
+
+    wordlist = str(text.translate(dic))
+    
+    # マルコフ連鎖用のテーブルを作成する
+    markov = {}
+    w1 = ''
+    w2 = ''
+    for word in wordlist:
+        if w1 and w2:
+            if (w1, w2) not in markov:
+                markov[(w1, w2)] = []
+                #print('w1 not in markov ', w1)
+                #print('w2 not in markov ', w2)
+            markov[(w1, w2)].append(word)
+            #print('w1 append:', w1)
+            #print('w2 append:', w2)
+        w1, w2 = w2, word
+        #print('w1:', w1)
+        #print('w2:', w2)
+    # 文章の自動作成
+    count = 0
+    sentence = ""
+    w1, w2 = random.choice(list(markov.keys()))
+
+    N = range(10, 100)
+    while count < random.choice(N):
+        tmp = random.choice(markov[(w1, w2)])
+        sentence += tmp
+        w1, w2 = w2, tmp
+        count += 1
+
+    print(sentence.strip())
+if __name__ == "__main__":
+    main()
