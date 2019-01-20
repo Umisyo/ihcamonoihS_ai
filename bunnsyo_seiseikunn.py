@@ -46,8 +46,7 @@ def main():
         count += 1
     
     print(sentence.strip())
-        
-    #api.update_status(sentence.strip())
+    api.update_status(sentence.strip())
 while True:
     main()
-    #time.sleep(300)
+    time.sleep(300)
