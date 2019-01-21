@@ -9,6 +9,7 @@ api = tweepy.API(auth ,wait_on_rate_limit = True)
 
 
 def main():
+
     with open('/mnt/c/users/user/awesome/my_ai/tweets.txt') as f:
         text = f.read()
 
