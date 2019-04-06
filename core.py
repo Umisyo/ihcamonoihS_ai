@@ -70,7 +70,9 @@ class Analyser:
             else:
                 parsed_content = nm.parse(content)
                 ls = list(parsed_content.split())
-                first_word.append(ls[0] + ',')
+                if '\d' in ls[0] == False:
+                    first_word.append(ls[0] + ',')
+
                 word_ls.append(ls[1:])
 
         df_f = pd.DataFrame(first_word)
